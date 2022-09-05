@@ -12,7 +12,29 @@ const generateToken = (id: string | object) => {
 
 class UserController {
   async register (req: Request, res: Response) {
-      res.send('registro!')
+    const { userName, email, password } = req.body
+    const user = await User.findOne({ email })
+
+    if (user) {
+      res.status(422).json({errors: ['Endereço de email já cadastrado.']})
+      return
+    }
+
+    const crypt = await bcrypt.genSalt()
+    const passHash = await bcrypt.hash(password, crypt)
+
+    const newUser = await User.create({
+      userName,
+      email,
+      password: passHash
+    })
+    
+    if(!newUser) res.status(422).json({errors: ['Erro no servidor, por favor tente mais tarde.']})
+    
+    res.status(201).json({
+      _id: newUser._id,
+      token: generateToken(newUser._id)
+    })
   }
 }
 
