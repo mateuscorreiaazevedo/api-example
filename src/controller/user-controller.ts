@@ -15,10 +15,7 @@ class UserController {
     const { userName, email, password } = req.body
     const user = await User.findOne({ email })
 
-    if (user) {
-      res.status(422).json({errors: ['Endereço de email já cadastrado.']})
-      return
-    }
+    if (user) res.status(422).json({errors: ['Endereço de email já cadastrado.']})
 
     const crypt = await bcrypt.genSalt()
     const passHash = await bcrypt.hash(password, crypt)
@@ -34,6 +31,23 @@ class UserController {
     res.status(201).json({
       _id: newUser._id,
       token: generateToken(newUser._id)
+    })
+  }
+
+  async login (req: Request, res: Response) {
+    const { email, password } = req.body
+    const user = await User.findOne({ email })
+    
+    if(!user) res.status(404).json({errors: ['Usuário não cadastrado.']})
+
+    const passwordChecked = await bcrypt.compare(password, (user?.password as string ))
+
+    if(!passwordChecked) res.status(422).json({errors: ['Senha incorreta.']})
+
+    res.status(201).json({
+      _id: user?._id,
+      userAvatar: user?.userAvatar,
+      token: generateToken(user?._id as any)
     })
   }
 }

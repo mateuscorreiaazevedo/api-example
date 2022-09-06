@@ -1,11 +1,12 @@
 import { userController } from '../controller/user-controller'
-import userValidation from '../middlewares/user-validation'
+import { userValidation } from '../middlewares/user-validation'
 import { validate } from '../middlewares/validations'
 
 import express from 'express'
 
-const userRouter = express.Router()
+const userRoute = express.Router()
 
-userRouter.post('/register', userValidation(), validate, userController.register)
+userRoute.post('/register', userValidation.createValidation(), validate, userController.register)
+userRoute.post('/login', userValidation.loginValidation(), validate, userController.login)
 
-export default userRouter
+export default userRoute

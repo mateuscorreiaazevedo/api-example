@@ -1,7 +1,8 @@
 import { body } from 'express-validator'
 
-export default function userValidation () {
-  return [
+
+export const userValidation = {
+  createValidation: () => [
     body('userName')
       .isString().withMessage('O nome de usuário é obrigatório.')
       .isLength({min: 4}).withMessage('O nome de usuário deve conter no mínimo 4 caracteres.'),
@@ -17,5 +18,12 @@ export default function userValidation () {
         if (value !== req.body.password) throw new Error('A senhas devem ser iguais.')
         return true
       })
+  ],
+  loginValidation: () => [
+    body('email')
+      .isString().withMessage('o email é obrigatório.')
+      .isEmail().withMessage('Endereço de email inválido.'),
+    body('password')
+      .isString().withMessage('A senha é obrigatória.')
   ]
 }
