@@ -4,7 +4,7 @@ dotenv.config()
 
 export default {
   port: process.env.PORT || 9002,
-  jwtSecret: process.env.JWT_SECRET,
+  jwtSecret: process.env.JWT_SECRET || "s3cr3t",
   dbUser: process.env.DB_USER,
   dbPass: process.env.DB_PASS
 }
